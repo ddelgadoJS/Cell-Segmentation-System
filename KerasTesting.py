@@ -1,8 +1,46 @@
 # MLP for Pima Indians Dataset Serialize to JSON and HDF5
 from keras.models import Sequential
-from keras.layers import Dense, Activation
+from keras.layers import Dense, Activation, Flatten
 from keras.engine.saving import load_model
 
+def createModel():
+    #model.add(Dense(units=64, activation='relu', input_dim=100))
+    #model.add(Flatten())
+    model = Sequential()
+    model.add(Dense(64, input_shape=(64,64)))
+    model.add(Dense(64))
+    model.add(Dense(64))
+    model.add(Dense(64))
+    model.add(Dense(64))
+    model.add(Dense(64))
+    model.add(Dense(64))
+    model.add(Dense(64))
+    model.add(Dense(64))
+    model.add(Dense(64))
+    model.add(Dense(64))
+    model.add(Dense(64))
+    model.add(Dense(64))
+    model.add(Dense(64))
+    
+    
+    #model.add(Den)
+    
+    
+    return model
+
+def loadWeights(model):
+    model.load_weights("best_male_model.h5")
+    
+    return model
+
+model = createModel()
+print("Model created")
+
+model.load_weights("best_female_model.h5")
+print("Loaded model from disk")
+
+
+"""
 #model = Sequential()
 model = Sequential([
     Dense(32, input_shape=(784,)),
@@ -27,6 +65,7 @@ model = Sequential([
 model.load_weights("best_female_model.h5")
 
 print("Loaded model from disk")
+"""
 
 """
 
