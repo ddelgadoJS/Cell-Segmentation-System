@@ -11,26 +11,38 @@ Jose Daniel Delgado Segura - 2015001500
 from keras.preprocessing import image
 import matplotlib.pyplot as plt
 
-def LoadImage(path):
-    """
-    Funcion LoadImage()
-    @param path a imagen
-    @return imagen convertida a array
-    """
-    
-    img = image.img_to_array(image.load_img(path, grayscale = False, target_size = None))
-    
-    return img
+import scipy.misc
 
-def ShowImage(img):
+def LoadImage(file_name):
     """
-    Funcion ShowImage()
-    @param array de imagen
-    @return NONE
+    Carga imagen en un Numpy array 
+    @param file_name: path a imagen por cargar
+    @return image_array: imagen convertida a Numpy array
     """
     
-    plt.imshow(img/255.)
+    image_array = image.img_to_array(image.load_img(file_name, grayscale = False, target_size = None))
+    
+    return image_array
+
+def ShowImage(image_array):
+    """
+    Muestra imagen de un Numpy array en pantalla
+    @param image_array: imagen almacenada en un Numpy array
+    @return nada
+    """
+    
+    plt.imshow(image_array/255.)
     plt.show()
     
-img = LoadImage("image.jpg")
-ShowImage(img)
+def SaveImage(file_name, image_array):
+    """
+    Guarda una imagen en un Numpy array a un archivo jpg
+    @param file_name: 'image/folder/image_name'
+    @param image_array: imagen almacenada en un Numpy array
+    :return: nada
+    """
+    scipy.misc.imsave(file_name + ".jpg", image_array)
+    
+image_array = LoadImage("image.jpg")
+ShowImage(image_array)
+SaveImage("test_name", image_array)
