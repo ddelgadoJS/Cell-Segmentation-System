@@ -1,3 +1,13 @@
+"""@package docstring
+Aseguramiento de la Calidad del Software
+Prueba de Concepto
+
+Estudiantes:
+Kevin Giancarlo Montoya Meza - 2015183063
+Ignacio Cantillo Valladares - 2016099060
+Jose Daniel Delgado Segura - 2015001500
+"""
+
 # MLP for Pima Indians Dataset Serialize to JSON and HDF5
 from keras.models import Sequential
 from keras.layers import Dense
@@ -6,6 +16,11 @@ import numpy
 import os
 
 def CreateModel():
+    """
+    Funcion CreateImage()
+    @return modelo creado con Keras
+    """
+    
     # fix random seed for reproducibility
     numpy.random.seed(7)
     # load pima indians dataset
@@ -31,17 +46,27 @@ def CreateModel():
     return model, X, Y
 
 def ModelToJSON(model):
+    """
+    Funcion ModelToJSON()
+    @param modelo creado previamente en Keras
+    @return NONE
+    """
+    
     # serialize model to JSON
     model_json = model.to_json()
     with open("model.json", "w") as json_file:
         json_file.write(model_json)
     # serialize weights to HDF5
     model.save_weights("model.h5")
-    print("Saved model to disk")
-    
-    return 
+    print("Saved model to disk") 
 
 def LoadJSON(X, Y):
+    """
+    Funcion LoadJSON()
+    Archivo JSON debe encontrarse en el mismo directorio del programa
+    @param X, Y
+    """
+    
     # load json and create model
     json_file = open('model.json', 'r')
     loaded_model_json = json_file.read()
