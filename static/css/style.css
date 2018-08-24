@@ -1,0 +1,40 @@
+body {
+    font-family: 'Raleway', sans-serif;
+    background: linear-gradient(to top, #232526, #414345);
+}
+
+h1 {
+  font-family: "Raleway", sans-serif;
+  font-size: 90px;
+  padding: 250px 250px;
+  text-align: center;
+  text-transform: uppercase;
+  text-rendering: optimizeLegibility;
+  color: #ffffff;
+  letter-spacing: .15em;
+  text-shadow: 1px -1px 0 #131313, -1px 2px 1px #0f0f0f, -2px 4px 1px #0b0b0b, -3px 6px 1px #090909, -4px 8px 1px #050505, -5px 10px 1px #000000;
+  margin:10px 10px 10px 10px;
+}
+
+h2{
+  font-family: "Relaway", sans-serif;
+  font-size: 45px;
+  text-align: center;
+  padding: 30px 0px;
+  text-transform: uppercase;
+  text-rendering: optimizeLegibility;
+  color: #ffffff;
+  letter-spacing: .15em;
+  text-shadow: 1px -1px 0 #131313, -1px 2px 1px #090909, -2px 4px 1px #000000;
+  overflow: auto;
+}
+
+input{
+  color: white;
+  display: block;
+  padding: 100px 0px;
+  margin-right: auto;
+  margin-left: auto;
+  font-family: "Relaway", sans-serif;
+  text-rendering: optimizeLegibility;
+}

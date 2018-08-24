@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Segmentación de Células</title>
+  <link href="https://fonts.googleapis.com/css?family=Raleway:200,400" rel="stylesheet">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" type="text/css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+  <script src="{{ url_for('static', filename='js/funcion.js') }}" type="text/javascript"></script>
+
+</head>
+<body>
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+          <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="#/Inicio"> <i class="fa fa-home" aria-hidden="true"></i> </a>
+          </div>
+          <div>
+              <div class="collapse navbar-collapse" id="myNavbar">
+                  <ul class="nav navbar-nav">
+                      <li><a href="#/IMGs">Carga de Imagenes</a></li>
+                      <li><a href="#/CSVs">Gestionar CSV</a></li>
+                  </ul>
+              </div>
+          </div>
+      </div>
+  </nav>
+
+  <div id="/Inicio" class="container-fluid" style="background-image: url({{ url_for('static', filename='img/1.jpg')}}); height: 800px;">
+    <h1> Segmentación de Células </h1>
+  </div>
+
+  <div id="/IMGs" class="container-fluid" style= "background-image: url({{ url_for('static', filename='img/3.jpg')}}); height: 600px;">
+    <h2> Imagenes </h2>
+    <input type="file" class = "btn btn-default" id= "imgUp" name="imgUp" accept="image/*">
+    <input type="button" class = "btn btn-default" style="display: block; margin-right: auto; margin-left: auto; margin-top: 5px" id="actImg" name="actImg" value="Actualizar" onclick="actualizarImagen();">
+    <img id = "imgAct" style="display: block; margin-right: auto; margin-left: auto; margin-top: 30px; weight: 500px; height: 350px;" src= {{ url_for('static', filename= 'img/4.jpg')}}>
+  </div>
+
+  <div id="/CSVs" class="container-fluid" style= "background-image: url({{ url_for('static', filename='img/2.jpg')}}); height: 600px;">
+    <h2> CSV </h2>
+    <div style="color: white; padding: 30px 350px;" >
+      {% from "_macro.html" import render_field %}
+      <form name= "datosCSV" id = "datosID" method = "POST">
+        {{ render_field(form.algoritmo, class = 'form-control') }}
+        {{ render_field(form.comentario, class = 'form-control') }}
+        {{ render_field(form.nombreCSV, class = 'form-control') }}
+
+        <div style="text-align: right; padding: 50px 0px;">
+          <button type = "submit" class = "btn btn-default"> Procesar </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+</body>
+</html>
