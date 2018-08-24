@@ -20,7 +20,9 @@ def LoadImage(file_name):
     @return image_array: imagen convertida a Numpy array
     """
     
-    image_array = image.img_to_array(image.load_img(file_name, grayscale = False, target_size = None))
+    im = image.load_img(file_name, grayscale = False, target_size = None)
+    
+    image_array = image.img_to_array(im)
     
     return image_array
 
@@ -44,5 +46,5 @@ def SaveImage(file_name, image_array):
     scipy.misc.imsave(file_name + ".jpg", image_array)
     
 image_array = LoadImage("image.jpg")
-ShowImage(image_array)
-SaveImage("test_name", image_array)
+#ShowImage(image_array)
+#SaveImage("test_name", image_array)
