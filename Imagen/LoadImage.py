@@ -39,7 +39,7 @@ def SaveImage(file_name, image_array):
     Guarda una imagen en un Numpy array a un archivo jpg
     @param file_name: 'image/folder/image_name'
     @param image_array: imagen almacenada en un Numpy array
-    :return: nada
+    @return: nada
     """
     scipy.misc.imsave(file_name + ".jpg", image_array)
     
