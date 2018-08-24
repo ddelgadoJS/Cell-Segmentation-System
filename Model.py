@@ -13,12 +13,11 @@ from keras.models import Sequential
 from keras.layers import Dense
 from keras.models import model_from_json
 import numpy
-import os
 
 def CreateModel():
     """
-    Funcion CreateImage()
-    @return modelo creado con Keras
+    Crea el modelo en Keras
+    @return model: modelo creado con Keras
     """
     
     # fix random seed for reproducibility
@@ -47,9 +46,9 @@ def CreateModel():
 
 def ModelToJSON(model):
     """
-    Funcion ModelToJSON()
-    @param modelo creado previamente en Keras
-    @return NONE
+    Almacena el modelo a un archivo JSON
+    @param model: modelo creado previamente en Keras
+    @return nada
     """
     
     # serialize model to JSON
@@ -58,13 +57,14 @@ def ModelToJSON(model):
         json_file.write(model_json)
     # serialize weights to HDF5
     model.save_weights("model.h5")
-    print("Saved model to disk") 
+    print("Saved model to disk")
 
 def LoadJSON(X, Y):
     """
-    Funcion LoadJSON()
+    Carga modelo previamente guardado en un archivo JSON
     Archivo JSON debe encontrarse en el mismo directorio del programa
     @param X, Y
+    @return nada
     """
     
     # load json and create model
@@ -83,7 +83,7 @@ def LoadJSON(X, Y):
 
 
 # Main
-resultTuple = CreateModel() # Model at 0, X at 1, Y at 2
+resultTuple = CreateModel() # Model at index 0, X at 1, Y at 2
 
 ModelToJSON(resultTuple[0])
 
