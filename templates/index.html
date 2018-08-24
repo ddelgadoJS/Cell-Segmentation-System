@@ -13,6 +13,8 @@
 
 </head>
 <body>
+
+  <!-- Barra Principal que contiene las secciones de la pagina  -->
   <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container-fluid">
           <div class="navbar-header">
@@ -33,17 +35,19 @@
       </div>
   </nav>
 
+  <!-- Seccion 1: Es la seccion Home o Inicio la cual tiene el titulo de la pagina web -->
   <div id="/Inicio" class="container-fluid" style="background-image: url({{ url_for('static', filename='img/1.jpg')}}); height: 800px;">
     <h1> Segmentación de Células </h1>
   </div>
 
+  <!-- Seccion 2: Es la seccion que se encarga de la carga de las imagenes -->
   <div id="/IMGs" class="container-fluid" style= "background-image: url({{ url_for('static', filename='img/3.jpg')}}); height: 600px;">
     <h2> Imagenes </h2>
     <input type="file" class = "btn btn-default" id= "imgUp" name="imgUp" accept="image/*">
-    <input type="button" class = "btn btn-default" style="display: block; margin-right: auto; margin-left: auto; margin-top: 5px" id="actImg" name="actImg" value="Actualizar" onclick="actualizarImagen();">
-    <img id = "imgAct" style="display: block; margin-right: auto; margin-left: auto; margin-top: 30px; weight: 500px; height: 350px;" src= {{ url_for('static', filename= 'img/4.jpg')}}>
+    <img id = "imgAct" style="display: block; margin-right: auto; margin-left: auto; margin-top: 30px; weight: 500px; height: 350px;" src= {{ url_for('static', filename= 'img/5.jpg')}}>
   </div>
 
+  <!-- Seccion 3: En esta seccion se tiene la gestion del CSV y la toma de los datos para dicha generacion -->
   <div id="/CSVs" class="container-fluid" style= "background-image: url({{ url_for('static', filename='img/2.jpg')}}); height: 600px;">
     <h2> CSV </h2>
     <div style="color: white; padding: 30px 350px;" >
