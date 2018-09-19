@@ -46,5 +46,5 @@ def SaveImage(file_name, image_array):
     scipy.misc.imsave(file_name + ".jpg", image_array)
     
 image_array = LoadImage("image.jpg")
-#ShowImage(image_array)
-#SaveImage("test_name", image_array)
+ShowImage(image_array)
+SaveImage("test_name", image_array)
