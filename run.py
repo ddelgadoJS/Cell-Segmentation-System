@@ -15,6 +15,12 @@ Jose Daniel Delgado Segura - 2015001500
 from flask import Flask
 from flask import render_template
 from flask import request
+from flask import redirect, url_for, send_from_directory
+
+import os
+
+UPLOAD_FOLDER = os.path.abspath("./uploads/")
+STATIC_FOLDER = os.path.abspath("./static/img")
 
 """ Imports para Macros """
 
@@ -32,6 +38,14 @@ import pandas as pd
     @param comentario: comentario acerca de la imagen
     @return nada
 """
+
+def listaT(tam):
+    cont = 1;
+    l = []
+    while cont < tam:
+        l = l + [cont]
+        cont += 1
+    return l
 
 def escribirCSV(nombre, noAlgoritmo, comentario):
     """ Datos Default para prueba POC """
@@ -67,6 +81,8 @@ def leerCSV(nombreArchivo):
 
 """ Nuevo Objeto """
 app = Flask(__name__) 
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+app.config["STATIC_FOLDER"] = STATIC_FOLDER
 
 """
     Funcion para la llamada del archivo con los datos de la pagina web 
@@ -80,7 +96,7 @@ app = Flask(__name__)
 def index():
     """ Llamada al formulario de datos en la pagina web """
     comment_form = forms.CommentForm(request.form)
-    
+    title = "Segmentacion de Celulas"   
     """ Si se recibe una solicitud POST de la paguina web y las validaciones funcionan se imprimen en pantalla y se genera el documento """
     if request.method == 'POST' and comment_form.validate():
         print (comment_form.algoritmo.data)
@@ -88,11 +104,49 @@ def index():
         print (comment_form.nombreCSV.data)
         escribirCSV(comment_form.nombreCSV.data, comment_form.algoritmo.data, comment_form.comentario.data)
         print("CSV Generado")
-    title = "Segmentacion de Celulas"
+    elif request.method == "POST" and "imgUp" in request.files:
+        f= request.files.getlist("imgUp")
+        print(f)
+        if f[0].filename != "":
+            for fn in f:
+                fn.save(os.path.join(app.config["STATIC_FOLDER"], fn.filename))
+                fn.save(os.path.join(app.config["UPLOAD_FOLDER"], fn.filename))
+                # return redirect(url_for("get_file", filename=filename))
+                send_from_directory(app.config["UPLOAD_FOLDER"], fn.filename)
+                fn.filename = "img/" + fn.filename
+                print(fn.filename)
+            print(f)
+            ft = listaT(len(f))
+            print("Imagenes Cargadas")
+            return render_template('index.html', title = title, form = comment_form, fp = f[0], filename= f[1:], ft = ft)
+        
     """ Renderiza pagina web para ser visualizada """
     return render_template('index.html', title = title, form = comment_form)
+
+# @app.route("/upload", methods=["GET", "POST"])
+# def upload():
+#     """ Llamada al formulario de datos en la pagina web """
+#     comment_form = forms.CommentForm(request.form)
+#     title = "Segmentacion de Celulas"
+#     
+#     if request.method == "POST":
+#         if "imgUp" in request.files:
+#             f= request.files.getlist("imgUp")
+#             print(f)
+#             if f[0].filename != "":
+#                 for fn in f:
+#                     fn.save(os.path.join(app.config["UPLOAD_FOLDER"], fn.filename))
+#                     # return redirect(url_for("get_file", filename=filename))
+#                     send_from_directory(app.config["UPLOAD_FOLDER"], fn.filename)
+#                     fn.filename = "img/" + fn.filename
+#                     print(fn.filename)
+#                 print(f)
+#                 ft = listaT(len(f))
+#                 return render_template('index.html', title = title, form = comment_form, fp = f[0], filename= f[1:], ft = ft)
+#     return render_template('uploader.html')
+
 
 """ Corre el servidor 8000 si lo dejo en default es 5000 """
 
 if __name__ == '__main__':
-    app.run(debug = True, port= 8000)
+    app.run(host= '0.0.0.0', debug= True, port= 8000)
