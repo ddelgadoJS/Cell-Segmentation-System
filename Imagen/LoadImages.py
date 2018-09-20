@@ -8,43 +8,43 @@ Ignacio Cantillo Valladares - 2016099060
 Jose Daniel Delgado Segura - 2015001500
 """
 
-from keras.preprocessing import image
+from keras.preprocessing import image as kImage
 import matplotlib.pyplot as plt
-
 import scipy.misc
 
-def LoadImage(file_name):
-    """
-    Carga imagen en un Numpy array 
-    @param file_name: path a imagen por cargar
-    @return image_array: imagen convertida a Numpy array
-    """
+class Images:
     
-    im = image.load_img(file_name, grayscale = False, target_size = None)
+    def loadImage(self, fileName):
+        """
+        Carga imagen en un Numpy array 
+        @param fileName: path a imagen por cargar
+        @return image_array: imagen convertida a Numpy array
+        """
+        
+        self.im = kImage.load_img(fileName, grayscale = False, target_size = None)
+        
+        self.imageArray = kImage.img_to_array(self.im)
+        
+    def showImage(self):
+        """
+        Muestra imagen de un Numpy array en pantalla
+        @return nada
+        """
+        
+        plt.imshow(self.imageArray/255.)
+        plt.show()
+        
+    def saveImage(self, fileName):
+        """
+        Guarda una imagen en un Numpy array a un archivo jpg
+        @param file_name: 'image/folder/image_name'
+        @param image_array: imagen almacenada en un Numpy array
+        @return: nada
+        """
+        scipy.misc.imsave(fileName + ".jpg", self.imageArray)
+            
     
-    image_array = image.img_to_array(im)
-    
-    return image_array
-
-def ShowImage(image_array):
-    """
-    Muestra imagen de un Numpy array en pantalla
-    @param image_array: imagen almacenada en un Numpy array
-    @return nada
-    """
-    
-    plt.imshow(image_array/255.)
-    plt.show()
-    
-def SaveImage(file_name, image_array):
-    """
-    Guarda una imagen en un Numpy array a un archivo jpg
-    @param file_name: 'image/folder/image_name'
-    @param image_array: imagen almacenada en un Numpy array
-    @return: nada
-    """
-    scipy.misc.imsave(file_name + ".jpg", image_array)
-    
-image_array = LoadImage("image.jpg")
-ShowImage(image_array)
-SaveImage("test_name", image_array)
+image = Images()
+image.loadImage("image.jpg")
+image.showImage()
+image.saveImage("Hello")
