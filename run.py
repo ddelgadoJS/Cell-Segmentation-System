@@ -22,9 +22,10 @@ import os
 UPLOAD_FOLDER = os.path.abspath("./uploads/")
 STATIC_FOLDER = os.path.abspath("./static/img")
 
-""" Imports para Macros """
+""" Imports para Macros y Objetos """
 
 import forms
+import imagen
 
 """ Imports para Manejo de CSV con pandas """
 import pandas as pd
@@ -42,6 +43,8 @@ import pandas as pd
 def listaT(tam):
     cont = 1;
     l = []
+    if (tam == 0):
+        raise ValueError('Lista de Imagenes Vacia')
     while cont < tam:
         l = l + [cont]
         cont += 1
@@ -51,6 +54,10 @@ def escribirCSV(nombre, noAlgoritmo, comentario):
     """ Datos Default para prueba POC """
     
     """ Diccionario de Datos ficticios que se agregaran al CSV """
+    
+    if (nombre == "" or noAlgoritmo == "" or comentario == ""):
+        raise ValueError('Todos los campos deben estar llenos')
+        
     diccionario = {'Algorithm Number': [noAlgoritmo], 
         'Obj_quantity': [24], 
         'Precision': [42],
@@ -92,59 +99,52 @@ app.config["STATIC_FOLDER"] = STATIC_FOLDER
 
 """ Decorador que contiene la ruta """
 @app.route('/', methods = ['GET', 'POST'])
-
 def index():
     """ Llamada al formulario de datos en la pagina web """
     comment_form = forms.CommentForm(request.form)
     title = "Segmentacion de Celulas"   
-    """ Si se recibe una solicitud POST de la paguina web y las validaciones funcionan se imprimen en pantalla y se genera el documento """
+    
+    """ Si se recibe una solicitud POST de la paguina web y las validaciones 
+        funcionan se imprimen en pantalla y se genera el documento. Si no 
+        si se recibe una solicitud POST de la pagina y se tienen datos en la variable 
+        del input con el nombre imgUp se realiza la carga de dichas imagenes """
+        
+        
     if request.method == 'POST' and comment_form.validate():
         print (comment_form.algoritmo.data)
         print (comment_form.comentario.data)
         print (comment_form.nombreCSV.data)
         escribirCSV(comment_form.nombreCSV.data, comment_form.algoritmo.data, comment_form.comentario.data)
         print("CSV Generado")
+
+        
     elif request.method == "POST" and "imgUp" in request.files:
         f= request.files.getlist("imgUp")
-        print(f)
+        fl = []
+        # print(f)
         if f[0].filename != "":
             for fn in f:
                 fn.save(os.path.join(app.config["STATIC_FOLDER"], fn.filename))
                 fn.save(os.path.join(app.config["UPLOAD_FOLDER"], fn.filename))
-                # return redirect(url_for("get_file", filename=filename))
                 send_from_directory(app.config["UPLOAD_FOLDER"], fn.filename)
                 fn.filename = "img/" + fn.filename
-                print(fn.filename)
+                # print(fn.filename)
+                
+                # Se almacena en una lista para futuro procesamiento
+                item = imagen.Imagen(fn.filename)
+                fl = fl + [item]
+                
             print(f)
             ft = listaT(len(f))
             print("Imagenes Cargadas")
+            # print ("Objeto Creado")
+            # print (fl[0].getImagenes())
             return render_template('index.html', title = title, form = comment_form, fp = f[0], filename= f[1:], ft = ft)
+        else:
+            raise ValueError('No se han seleccionado imagenes para procesar')
         
     """ Renderiza pagina web para ser visualizada """
     return render_template('index.html', title = title, form = comment_form)
-
-# @app.route("/upload", methods=["GET", "POST"])
-# def upload():
-#     """ Llamada al formulario de datos en la pagina web """
-#     comment_form = forms.CommentForm(request.form)
-#     title = "Segmentacion de Celulas"
-#     
-#     if request.method == "POST":
-#         if "imgUp" in request.files:
-#             f= request.files.getlist("imgUp")
-#             print(f)
-#             if f[0].filename != "":
-#                 for fn in f:
-#                     fn.save(os.path.join(app.config["UPLOAD_FOLDER"], fn.filename))
-#                     # return redirect(url_for("get_file", filename=filename))
-#                     send_from_directory(app.config["UPLOAD_FOLDER"], fn.filename)
-#                     fn.filename = "img/" + fn.filename
-#                     print(fn.filename)
-#                 print(f)
-#                 ft = listaT(len(f))
-#                 return render_template('index.html', title = title, form = comment_form, fp = f[0], filename= f[1:], ft = ft)
-#     return render_template('uploader.html')
-
 
 """ Corre el servidor 8000 si lo dejo en default es 5000 """
 
