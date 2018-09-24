@@ -1,7 +1,6 @@
 """
 @package docstring
 Aseguramiento de la Calidad del Software
-Prueba de Concepto
 
 Estudiantes:
 Kevin Giancarlo Montoya Meza - 2015183063
@@ -15,7 +14,7 @@ Jose Daniel Delgado Segura - 2015001500
 from flask import Flask
 from flask import render_template
 from flask import request
-from flask import redirect, url_for, send_from_directory
+from flask import send_from_directory
 
 import os
 
@@ -30,14 +29,10 @@ import imagen
 """ Imports para Manejo de CSV con pandas """
 import pandas as pd
 
-""" Manejo del CSV """
-
-"""
-    Escribir CSV con datos generados de manera ficticia apartir de la imagen
-    @param nombre: nombre del CSV
-    @param noAlgoritmo: numero de algoritmo aplicado a la imagen
-    @param comentario: comentario acerca de la imagen
-    @return nada
+""""
+    Crear Lista para manejo de imagenes en aplicacion web
+    @param tam: tamanno de la lista que se desea construir
+    @return l: lista construida 
 """
 
 def listaT(tam):
@@ -49,6 +44,16 @@ def listaT(tam):
         l = l + [cont]
         cont += 1
     return l
+
+""" Manejo del CSV """
+
+"""
+    Escribir CSV con datos generados de manera ficticia apartir de la imagen
+    @param nombre: nombre del CSV
+    @param noAlgoritmo: numero de algoritmo aplicado a la imagen
+    @param comentario: comentario acerca de la imagen
+    @return nada
+"""
 
 def escribirCSV(nombre, noAlgoritmo, comentario):
     """ Datos Default para prueba POC """
@@ -68,7 +73,8 @@ def escribirCSV(nombre, noAlgoritmo, comentario):
     
     """" Creando CSV """
     df = pd.DataFrame(diccionario, columns = listaColumnas)
-    df.to_csv('C:/Users/Kevin MM/eclipse-workspace/SegmentacionCelulas/static/csv/'+nombre+'.csv') #Especificar ruta
+    df.to_csv('C:/Users/Kevin MM/eclipse-workspace/SegmentacionCelulas/static/csv/'
+              +nombre+'.csv') #Especificar ruta
     print("Creado con Exito")
 
 """
@@ -80,8 +86,10 @@ def escribirCSV(nombre, noAlgoritmo, comentario):
 """
 
 def leerCSV(nombreArchivo):
-    df = pd.read_csv('C:/Users/Kevin MM/eclipse-workspace/SegmentacionCelulas/static/csv/'+nombreArchivo+'.csv')
-    print(df['Algorithm Number'][4] + ' ' + df['Precision'][4]) #Se escoge la columna a leer y lo demas se trata como una lista
+    df = pd.read_csv('C:/Users/Kevin MM/eclipse-workspace/SegmentacionCelulas/static/csv/'
+                     +nombreArchivo+'.csv')
+    print(df['Algorithm Number'][4] + ' ' + df['Precision'][4]) 
+    #Se escoge la columna a leer y lo demas se trata como una lista
 
 
 """ Pagina Web """
@@ -106,15 +114,17 @@ def index():
     
     """ Si se recibe una solicitud POST de la paguina web y las validaciones 
         funcionan se imprimen en pantalla y se genera el documento. Si no 
-        si se recibe una solicitud POST de la pagina y se tienen datos en la variable 
-        del input con el nombre imgUp se realiza la carga de dichas imagenes """
+        si se recibe una solicitud POST de la pagina y se tienen 
+        datos en la variable del input con el nombre imgUp 
+        se realiza la carga de dichas imagenes """
         
         
     if request.method == 'POST' and comment_form.validate():
         print (comment_form.algoritmo.data)
         print (comment_form.comentario.data)
         print (comment_form.nombreCSV.data)
-        escribirCSV(comment_form.nombreCSV.data, comment_form.algoritmo.data, comment_form.comentario.data)
+        escribirCSV(comment_form.nombreCSV.data, comment_form.algoritmo.data, 
+                    comment_form.comentario.data)
         print("CSV Generado")
 
         
@@ -139,7 +149,8 @@ def index():
             print("Imagenes Cargadas")
             # print ("Objeto Creado")
             # print (fl[0].getImagenes())
-            return render_template('index.html', title = title, form = comment_form, fp = f[0], filename= f[1:], ft = ft)
+            return render_template('index.html', title = title, 
+                                   form = comment_form, fp = f[0], filename= f[1:], ft = ft)
         else:
             raise ValueError('No se han seleccionado imagenes para procesar')
         
