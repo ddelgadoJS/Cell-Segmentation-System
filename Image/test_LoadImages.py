@@ -1,5 +1,7 @@
 import unittest
-from LoadImages import Images
+
+from .LoadImages import Images
+
 
 class TestLoadImage(unittest.TestCase):
     def test_BlackPixels(self):
@@ -10,5 +12,6 @@ class TestLoadImage(unittest.TestCase):
         image = Images()
         self.assertEqual(image.loadImage("WhitePixels.jpg"), 2550000)
         
+
 if __name__ == '__main__':
     unittest.main()

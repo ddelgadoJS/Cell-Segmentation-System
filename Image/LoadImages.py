@@ -10,8 +10,8 @@ Jose Daniel Delgado Segura - 2015001500
 
 from keras.preprocessing import image as kImage
 import matplotlib.pyplot as plt
-import tensorflow as tf
 import scipy.misc
+
 
 class Images:
     
@@ -22,7 +22,9 @@ class Images:
         @return image_array: imagen convertida a Numpy array
         """
         
-        self.im = kImage.load_img(fileName, color_mode = "grayscale", target_size = None)
+        self.im = kImage.load_img(fileName,
+                                  color_mode="grayscale",
+                                  target_size=None)
         self.imageArray = kImage.img_to_array(self.im)
         
         # For the tests
@@ -49,11 +51,10 @@ class Images:
         @param image_array: imagen almacenada en un Numpy array
         @return: nada
         """
-        scipy.misc.imsave(fileName + ".jpg", self.imageArray)    
+        scipy.misc.imsave(fileName + ".jpg", self.imageArray)
+  
     
-"""
-image = Images()
-print(image.loadImage("WhitePixels.jpg"))
-image.showImage()
-image.saveImage("Hello")
-"""
+#image = Images()
+#print(image.loadImage("WhitePixels.jpg"))
+#image.showImage()
+#image.saveImage("Hello")
