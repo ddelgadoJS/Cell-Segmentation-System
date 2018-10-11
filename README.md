@@ -100,4 +100,4 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE) f
 
 ## Acknowledgments
 
-* M. Sc. Saúl Calderón Ramírez
+* M. Sc. Saúl Calderón Ramírez - contributed with models for the system.
