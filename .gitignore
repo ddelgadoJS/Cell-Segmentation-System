@@ -115,4 +115,4 @@ dmypy.json
 *.json
 *.csv
 
-*.png
+#*.png
