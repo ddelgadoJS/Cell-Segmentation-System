@@ -26,13 +26,13 @@ $ pip install tensorflow
 #### Keras
 
 ```
-$ pip install Flask
+$ pip install --upgrade keras
 ```
 
 #### Flask
 
 ```
-$ pip install --upgrade keras
+$ pip install Flask
 ```
 
 ### Installing
@@ -100,4 +100,5 @@ This project is licensed under the MIT License - see the [LICENSE.md](LICENSE) f
 
 ## Acknowledgments
 
-* M. Sc. Saúl Calderón Ramírez - contributed with models for the system.
+* M. Sc. Saúl Calderón Ramírez - contributed with the models for the system.
+* Ing. Manuel Zumbado - contributed with the models for the system.
