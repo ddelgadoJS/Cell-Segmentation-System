@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Segmentación de Células</title>
+  <link href="https://fonts.googleapis.com/css?family=Raleway:200,400" rel="stylesheet">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}" type="text/css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+</head>
+<body>
+
+  <!-- Barra Principal que contiene las secciones de la pagina  -->
+  <nav class="navbar navbar-inverse navbar-fixed-top">
+      <div class="container-fluid">
+          <div class="navbar-header">
+              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
+                  <span class="icon-bar"></span>
+                  <span class="icon-bar"></span>
+              </button>
+              <a class="navbar-brand" href="#/Inicio"> <i class="fa fa-home" aria-hidden="true"></i> </a>
+          </div>
+          <div>
+              <div class="collapse navbar-collapse" id="myNavbar">
+                  <ul class="nav navbar-nav">
+                      <li><a href="#/IMGs">Carga de Imagenes</a></li>
+                      <li><a href="#/CSVs">Gestionar CSV</a></li>
+                  </ul>
+              </div>
+          </div>
+      </div>
+  </nav>
+
+  <!-- Seccion 1: Es la seccion Home o Inicio la cual tiene el titulo de la pagina web -->
+  <div id="/Inicio" class="container-fluid" style="background-image: url({{ url_for('static', filename='img/1.jpg')}}); height: 800px;">
+    <h1> Segmentación de Células </h1>
+  </div>
+
+  <!-- Seccion 2: Es la seccion que se encarga de la carga de las imagenes -->
+  <div id="/IMGs" class="container-fluid" style= "background-image: url({{ url_for('static', filename='img/3.jpg')}}); height: 700px;">
+
+
+    <h2> Imagenes </h2>
+    <form name= "imagenesForm" method= "POST" enctype="multipart/form-data">
+      <div style="padding: 30px 0px; display: inline-block; margin-left: 500px; margin-right: 500px;">
+        <div style="float: left; padding: 0px 15px;">
+          <input type="file" multiple="true" class = "btn btn-default" name="imgUp" accept="image/*">
+        </div>
+        <div style="float: right; padding: 0px 15px;">
+          <input class = "btn btn-default" style="height: 35px;" type="submit" value="Cargar">
+        </div>
+      </div>
+    </form>
+
+    <div style= "padding: 50px 0px;">
+
+      <!-- Carrusel 1 -->
+
+      <div class="container" style="width: 500px; height: 350px; left: 15%; float: left; position: absolute">
+        <div id="myCarousel" class="carousel slide" data-ride="carousel">
+          <!-- Indicadores -->
+          <ol class="carousel-indicators">
+            <li data-target="#myCarousel" data-slide-to="0" class="active"></li>
+            {% for n in ft %}
+              <li data-target="#myCarousel" data-slide-to={{ n }}></li>
+            {% endfor %}
+          </ol>
+
+          <!-- Imagenes -->
+          <div class="carousel-inner">
+            {% if fp is defined %}
+              <div class="item active">
+                <img src= {{ url_for('static', filename= fp.filename )}} style="width: 500px; height: 350px;">
+              </div>
+            {% endif %}
+            {% for fn in filename %}
+              <div class="item">
+                <img src= {{ url_for('static', filename= fn.filename )}} style="width: 500px; height: 350px;">
+              </div>
+            {% endfor %}
+          </div>
+
+          <!-- Controles -->
+          <a class="left carousel-control" href="#myCarousel" data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+            <span class="sr-only">Previous</span>
+          </a>
+          <a class="right carousel-control" href="#myCarousel" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+            <span class="sr-only">Next</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Carrusel 2 -->
+
+      <div class="container" style="width: 500px; height: 350px; right: 15%; float: right; position: absolute; ">
+        <div id="myCarousel2" class="carousel slide" data-ride="carousel">
+          <!-- Indicadores -->
+          <ol class="carousel-indicators">
+            <li data-target="#myCarousel2" data-slide-to="0" class="active"></li>
+            {% for n in ft %}
+              <li data-target="#myCarousel2" data-slide-to={{ n }}></li>
+            {% endfor %}
+          </ol>
+
+          <!-- Imagenes -->
+          <div class="carousel-inner">
+            {% if fpp is defined %}
+              <div class="item active">
+                <img src= {{ url_for('static', filename= fpp )}} style="width: 500px; height: 350px;">
+              </div>
+            {% endif %}
+            {% for fnp in filenameP %}
+              <div class="item">
+                <img src= {{ url_for('static', filename= fnp )}} style="width: 500px; height: 350px;">
+              </div>
+            {% endfor %}
+          </div>
+
+          <!-- Controles -->
+          <a class="left carousel-control" href="#myCarousel2" data-slide="prev">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+            <span class="sr-only">Previous</span>
+          </a>
+          <a class="right carousel-control" href="#myCarousel2" data-slide="next">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+            <span class="sr-only">Next</span>
+          </a>
+        </div>
+      </div>
+
+    </div>
+
+
+    <!-- {% for fn in filename %}
+      <img id = "imgAct" style="display: block; margin-right: auto; margin-left: auto; margin-top: 30px; weight: 500px; height: 350px;" src= {{ url_for('static', filename= fn.filename )}}>
+    {% endfor %} -->
+  </div>
+
+  <!-- Seccion 3: En esta seccion se tiene la gestion del CSV y la toma de los datos para dicha generacion -->
+  <div id="/CSVs" class="container-fluid" style= "background-image: url({{ url_for('static', filename='img/2.jpg')}}); height: 600px;">
+    <h2> CSV </h2>
+    <div style="color: white; padding: 30px 350px;" >
+      {% from "_macro.html" import render_field %}
+      <form name= "datosCSV" id = "datosID" method = "POST">
+        {{ render_field(form.algoritmo, class = 'form-control') }}
+        {{ render_field(form.comentario, class = 'form-control') }}
+        {{ render_field(form.nombreCSV, class = 'form-control') }}
+
+        <div style="text-align: right; padding: 50px 0px;">
+          <button type = "submit" class = "btn btn-default"> Procesar </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+</body>
+</html>

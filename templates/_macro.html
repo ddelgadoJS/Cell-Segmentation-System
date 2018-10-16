@@ -1,0 +1,18 @@
+<!-- Macro de Forms de Datos para su posible reutilizacion -->
+
+{% macro render_field(field) %}
+
+  <!-- Se agregan los campo de datos -->
+  <td> {{ field.label }}
+  <dd> {{ field(**kwargs)|safe }}
+
+  <!-- Se verifica el tipo de erro en caso de que haya errores -->
+  {% if field.errors %}
+    <ul>
+      <!-- Se itera sobre la lista de errores y se imprime segun el error correspondiente -->
+      {% for error in field.errors %}
+        <li> {{ error }} </li>
+      {% endfor %}
+    </ul>
+  {% endif %}
+{% endmacro %}
