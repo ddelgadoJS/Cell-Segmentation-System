@@ -39,6 +39,26 @@ class TestRun(unittest.TestCase):
         print("test_crearCSV")
         self.assertRaises(ValueError, run.escribirCSV, "", "", "")
         print("---- end test ----")
+        
+    def test_load_test_data(self):
+        print("test_load_test_data")
+        self.assertRaises(ValueError, run.load_test_data, [])
+        print("---- end test ----")
+    
+    def test_predict(self):
+        print("test_predict")
+        self.assertRaises(ValueError, run.predict, [])
+        print("---- end test ----")
+        
+    def test_predictWeight(self):
+        print("test_predictWeight")
+        self.assertRaises(ValueError, run.predict, [])
+        print("---- end test ----")
+        
+    def test_preprocess(self):
+        print("test_preprocess")
+        self.assertRaises(ValueError, run.preprocess, [])
+        print("---- end test ----")
 
 if __name__ == '__main__':
     unittest.main()
