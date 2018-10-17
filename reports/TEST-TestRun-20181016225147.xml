@@ -1,0 +1,33 @@
+<?xml version="1.0" ?>
+<testsuite errors="0" failures="0" name="TestRun-20181016225147" tests="4" time="0.010">
+	<testcase classname="TestRun" name="test_crearCSV" time="0.002"/>
+	<testcase classname="TestRun" name="test_generacionLista" time="0.001"/>
+	<testcase classname="TestRun" name="test_listaT" time="0.003"/>
+	<testcase classname="TestRun" name="test_listaVacia" time="0.004"/>
+	<system-out>
+<![CDATA[setUpClass
+setUp
+test_crearCSV
+---- end test ----
+tearDown
+
+setUp
+test_generacionLista
+---- end test ----
+tearDown
+
+setUp
+test_listaT
+---- end test ----
+tearDown
+
+setUp
+test_listaVacia
+---- end test ----
+tearDown
+
+tearDownClass
+]]>	</system-out>
+	<system-err>
+<![CDATA[]]>	</system-err>
+</testsuite>

@@ -61,4 +61,6 @@ class TestRun(unittest.TestCase):
         print("---- end test ----")
 
 if __name__ == '__main__':
-    unittest.main()
+    #unittest.main()
+    import xmlrunner
+    unittest.main(testRunner=xmlrunner.XMLTestRunner(output='reports'))
