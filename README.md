@@ -55,6 +55,7 @@ $ python run.py
 Once this was completed you will have access to the entire functionality of the project.
 
 ![](./Documents/images/1.png)
+![](./Documents/images/3.png)
 
 ## Running the tests
 
