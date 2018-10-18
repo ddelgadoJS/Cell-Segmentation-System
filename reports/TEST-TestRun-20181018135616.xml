@@ -1,0 +1,95 @@
+<?xml version="1.0" ?>
+<testsuite errors="1" failures="0" name="TestRun-20181018135616" tests="8" time="0.007">
+	<testcase classname="TestRun" name="test_crearCSV" time="0.001"/>
+	<testcase classname="TestRun" name="test_listaT" time="0.001"/>
+	<testcase classname="TestRun" name="test_listaVacia" time="0.001"/>
+	<testcase classname="TestRun" name="test_load_test_data" time="0.000"/>
+	<testcase classname="TestRun" name="test_predict" time="0.001"/>
+	<testcase classname="TestRun" name="test_predictWeight" time="0.001"/>
+	<testcase classname="TestRun" name="test_preprocess" time="0.001"/>
+	<testcase classname="TestRun" name="test_generacionLista" time="0.001">
+		<error message="Lists differ: [1, 2, 3, 4, 5, 6, 7, 8, 9] != [1, 2, 3, 4, 6, 7, 8, 9]
+
+First differing element 4:
+5
+6
+
+First list contains 1 additional elements.
+First extra element 8:
+9
+
+- [1, 2, 3, 4, 5, 6, 7, 8, 9]
+?              ---
+
++ [1, 2, 3, 4, 6, 7, 8, 9]" type="AssertionError">
+<![CDATA[Traceback (most recent call last):
+  File ".\test_run.py", line 30, in test_generacionLista
+    self.assertListEqual(result, [1, 2, 3, 4, 6, 7, 8, 9])
+AssertionError: Lists differ: [1, 2, 3, 4, 5, 6, 7, 8, 9] != [1, 2, 3, 4, 6, 7, 8, 9]
+
+First differing element 4:
+5
+6
+
+First list contains 1 additional elements.
+First extra element 8:
+9
+
+- [1, 2, 3, 4, 5, 6, 7, 8, 9]
+?              ---
+
++ [1, 2, 3, 4, 6, 7, 8, 9]
+]]>		</error>
+	</testcase>
+	<system-out>
+<![CDATA[setUpClass
+setUp
+test_crearCSV
+---- end test ----
+tearDown
+
+setUp
+test_generacionLista
+tearDown
+
+setUp
+test_listaT
+---- end test ----
+tearDown
+
+setUp
+test_listaVacia
+---- end test ----
+tearDown
+
+setUp
+test_load_test_data
+---- end test ----
+tearDown
+
+setUp
+test_predict
+------------------------------
+Loading and preprocessing test data...
+------------------------------
+---- end test ----
+tearDown
+
+setUp
+test_predictWeight
+------------------------------
+Loading and preprocessing test data...
+------------------------------
+---- end test ----
+tearDown
+
+setUp
+test_preprocess
+---- end test ----
+tearDown
+
+tearDownClass
+]]>	</system-out>
+	<system-err>
+<![CDATA[]]>	</system-err>
+</testsuite>
