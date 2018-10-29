@@ -2,7 +2,7 @@
 """
 Created on Sun Oct 28 17:36:43 2018
 
-@author: Daniel
+@author: Daniel Delgado
 """
 
 from random import randint
@@ -16,16 +16,13 @@ from scipy.ndimage import measurements
 # how-to-find-cluster-sizes-in-2d-numpy-array
 def getCellCenter(immat, X, Y):
     m = np.zeros((X, Y))
-    
     for x in range(X):
         for y in range(Y):
             m[x, y] = immat[(x, y)] != 0
     m = m / np.sum(np.sum(m))
-    
     # Marginal distributions
     dx = np.sum(m, 1)
     dy = np.sum(m, 0)
-    
     # Expected values
     cx = np.sum(dx * np.arange(X))
     cy = np.sum(dy * np.arange(Y))
@@ -54,7 +51,6 @@ def paintLabel(immat, center, cellNumber):
     cellNumberLen = len(str(abs(cellNumber)))
     # To center the label in cell
     center = (center[0]-(cellNumberLen-1)*2, center[1])
-    
     for i in range(0, cellNumberLen):
         printingNum = int(str(cellNumber)[i])
         if printingNum == 1:
@@ -166,7 +162,6 @@ def cellPostProcess(image_path, labelCells = False):
     img = Image.open(image_path)
     rgbimg = Image.new("RGBA", img.size)
     rgbimg.paste(img)
-    
     immat = rgbimg.load()
 
     (X, Y) = rgbimg.size
@@ -199,9 +194,7 @@ def cellPostProcess(image_path, labelCells = False):
                     if labelCells: immat[(x, y)] = cellColor
         # Paints a red pixel the center of the cell        
         cellsCenter = getCellCenter(slicedIm, X, Y)
-        #print(cellsCenter)
         immat = paintLabel(immat, cellsCenter, cell)
-        #immat[cellsCenter] = (255, 0, 0, 255)
         slicedIm = np.zeros((X, Y))
     
     # Kevin, please, rename this correctly
