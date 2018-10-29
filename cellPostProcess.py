@@ -7,7 +7,7 @@ Created on Sun Oct 28 17:36:43 2018
 
 from random import randint
 import numpy as np
-
+from pylab import *
 from PIL import Image
 from scipy.ndimage import measurements
 
@@ -85,10 +85,10 @@ def cellPostProcess(image_path, labelCells = False):
         immat[getCellCenter(slicedIm, X, Y)] = (255, 0, 0, 255)
         slicedIm = np.zeros((X, Y))
     
-    # Kevin, please rename this correctly
+    # Kevin, please, rename this correctly
     # This is the file that should be showed
-    rgbimg.save('centerImX.png')            
+    rgbimg.save('centerIm.png')            
 
 if __name__ == '__main__':
-    
-    cellPostProcess('C:\\Users\\Daniel\\Desktop\\mcf-z-stacks-03212011_a13_s2_mask.png')
+    cellPostProcess('C:\\Users\\Daniel\\Desktop\\preds\\1_pred.png', True)
+    print("Done :)")
