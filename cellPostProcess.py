@@ -43,6 +43,122 @@ def countCells(clusteredArray, X, Y):
 def getRandomColor():
     return ((randint(0, 255), randint(0, 255), randint(0, 255), 255))
 
+def paintLableAux(immat, x, y):
+    try:
+        immat[(x,y)] = (255, 255, 255, 255)
+    except IndexError:
+        pass
+    return immat
+
+def paintLabel(immat, center, cellNumber):
+    cellNumberLen = len(str(abs(cellNumber)))
+    # To center the label in cell
+    center = (center[0]-(cellNumberLen-1)*2, center[1])
+    
+    for i in range(0, cellNumberLen):
+        printingNum = int(str(cellNumber)[i])
+        if printingNum == 1:
+            for y in range(-4, 5):
+                immat = paintLableAux(immat, center[0]+(i*4), center[1]+y)
+        elif printingNum == 2:
+            # Horizontal lines
+            for x in range(-1, 2):
+                immat = paintLableAux(immat, center[0]+x+(i*4), center[1]-4)
+                immat = paintLableAux(immat, center[0]+x+(i*4), center[1])
+                immat = paintLableAux(immat, center[0]+x+(i*4), center[1]+4)
+            # Vertical lines
+            for y in range(-3, 0):
+                immat = paintLableAux(immat, center[0]+1+(i*4), center[1]+y)
+                immat = paintLableAux(immat, center[0]-1+(i*4), center[1]-y)
+        elif printingNum == 3:
+            # Horizontal lines
+            for x in range(-1, 2):
+                immat = paintLableAux(immat, center[0]+x+(i*4), center[1]-4)
+                immat = paintLableAux(immat, center[0]+x+(i*4), center[1])
+                immat = paintLableAux(immat, center[0]+x+(i*4), center[1]+4)
+            # Vertical lines
+            for y in range(-3, 0):
+                immat = paintLableAux(immat, center[0]+1+(i*4), center[1]+y)
+                immat = paintLableAux(immat, center[0]+1+(i*4), center[1]+y+4)
+        elif printingNum == 4:
+            # Horizontal lines
+            for x in range(-1, 2):
+                immat = paintLableAux(immat, center[0]+x+(i*4), center[1])
+            # Vertical lines
+            for y in range(-4, 1):
+                immat = paintLableAux(immat, center[0]-1+(i*4), center[1]+y)
+                immat = paintLableAux(immat, center[0]+1+(i*4), center[1]+y)
+                immat = paintLableAux(immat, center[0]+1+(i*4), center[1]+y+4)
+        elif printingNum == 5:
+            # Horizontal lines
+            for x in range(-1, 2):
+                immat = paintLableAux(immat, center[0]+x+(i*4), center[1]-4)
+                immat = paintLableAux(immat, center[0]+x+(i*4), center[1])
+                immat = paintLableAux(immat, center[0]+x+(i*4), center[1]+4)
+            # Vertical lines
+            for y in range(-3, 0):
+                immat = paintLableAux(immat, center[0]-1+(i*4), center[1]+y)
+                immat = paintLableAux(immat, center[0]+1+(i*4), center[1]-y)
+        elif printingNum == 6:
+            # Horizontal lines
+            for x in range(-1, 2):
+                immat = paintLableAux(immat, center[0]+x+(i*4), center[1]-4)
+                immat = paintLableAux(immat, center[0]+x+(i*4), center[1])
+                immat = paintLableAux(immat, center[0]+x+(i*4), center[1]+4)
+            # Vertical lines
+            for y in range(-3, 0):
+                immat = paintLableAux(immat, center[0]-1+(i*4), center[1]+y)
+                immat = paintLableAux(immat, center[0]-1+(i*4), center[1]-y)
+                immat = paintLableAux(immat, center[0]+1+(i*4), center[1]-y)
+        elif printingNum == 7:
+            # Top line
+            for x in range(-1, 2):
+                immat = paintLableAux(immat, center[0]+x+(i*4), center[1]-4)
+            # Middle line
+            for x in range(0, 2):
+                immat = paintLableAux(immat, center[0]+x+(i*4), center[1])
+            # Vertical lines
+            for y in range(-3, 1):
+                immat = paintLableAux(immat, center[0]+1+(i*4), center[1]+y)
+                immat = paintLableAux(immat, center[0]+1+(i*4), center[1]+y+4)
+        elif printingNum == 8:
+            # Horizontal lines
+            for x in range(-1, 2):
+                immat = paintLableAux(immat, center[0]+x+(i*4), center[1]-4)
+                immat = paintLableAux(immat, center[0]+x+(i*4), center[1])
+                immat = paintLableAux(immat, center[0]+x+(i*4), center[1]+4)
+            # Vertical lines
+            for y in range(-3, 0):
+                immat = paintLableAux(immat, center[0]-1+(i*4), center[1]+y)
+                immat = paintLableAux(immat, center[0]+1+(i*4), center[1]+y)
+                immat = paintLableAux(immat, center[0]-1+(i*4), center[1]-y)
+                immat = paintLableAux(immat, center[0]+1+(i*4), center[1]-y)
+        elif printingNum == 9:
+            # Horizontal lines
+            for x in range(-1, 2):
+                immat = paintLableAux(immat, center[0]+x+(i*4), center[1]-4)
+                immat = paintLableAux(immat, center[0]+x+(i*4), center[1])
+            # Vertical lines
+            for y in range(-3, 0):
+                immat = paintLableAux(immat, center[0]-1+(i*4), center[1]+y)
+                immat = paintLableAux(immat, center[0]+1+(i*4), center[1]+y)
+                immat = paintLableAux(immat, center[0]+1+(i*4), center[1]+y+4)
+            # Last pixel of vertical line
+            immat = paintLableAux(immat, center[0]+1+(i*4), center[1]+y+5)
+        elif printingNum == 0:
+            # Horizontal lines
+            for x in range(-1, 2):
+                immat = paintLableAux(immat, center[0]+x+(i*4), center[1]-4)
+                immat = paintLableAux(immat, center[0]+x+(i*4), center[1]+4)
+            # Vertical lines
+            for y in range(-3, 1):
+                immat = paintLableAux(immat, center[0]-1+(i*4), center[1]+y)
+                immat = paintLableAux(immat, center[0]+1+(i*4), center[1]+y)
+                immat = paintLableAux(immat, center[0]-1+(i*4), center[1]-y)
+                immat = paintLableAux(immat, center[0]+1+(i*4), center[1]-y)             
+                
+    return immat
+            
 # Counts, gets the area, gets the centroid and labels cells
 # Works with predictions, with raw images may generate inconsistencies
 # [labelCells] = boolean to know if user wants to label and color the cells
@@ -81,8 +197,11 @@ def cellPostProcess(image_path, labelCells = False):
                 if lw[x, y] == cell:
                     slicedIm[x, y] = 1
                     if labelCells: immat[(x, y)] = cellColor
-                
-        immat[getCellCenter(slicedIm, X, Y)] = (255, 0, 0, 255)
+        # Paints a red pixel the center of the cell        
+        cellsCenter = getCellCenter(slicedIm, X, Y)
+        #print(cellsCenter)
+        immat = paintLabel(immat, cellsCenter, cell)
+        #immat[cellsCenter] = (255, 0, 0, 255)
         slicedIm = np.zeros((X, Y))
     
     # Kevin, please, rename this correctly
@@ -90,5 +209,5 @@ def cellPostProcess(image_path, labelCells = False):
     rgbimg.save('centerIm.png')            
 
 if __name__ == '__main__':
-    cellPostProcess('C:\\Users\\Daniel\\Desktop\\preds\\1_pred.png', True)
+    cellPostProcess('C:\\Users\\Daniel\\Desktop\\preds\\1.png', True)
     print("Done :)")
