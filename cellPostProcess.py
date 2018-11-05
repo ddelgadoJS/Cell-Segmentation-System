@@ -220,12 +220,11 @@ def getApproxExecTime(path_):
     return approxExecTime
 
 if __name__ == '__main__':
-    start = timeit.default_timer() # Used to calculate the remaining exec time
     folderPath = 'C:\\Users\\Daniel\\Desktop\\preds'
     print("Predicted time: " + str(getApproxExecTime(folderPath)))
     
-    # Processing each file in folder
-    for i in listdir(folderPath):
+    start = timeit.default_timer() # Used to calculate the remaining exec time
+    for i in listdir(folderPath): # Processing each file in folder
         remainingTime = timeit.default_timer() - start
         print("Remaining time: " + remainingTime)
         cellPostProcess(folderPath + '\\' + i, i, True)
