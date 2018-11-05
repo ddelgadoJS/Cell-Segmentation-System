@@ -4,12 +4,13 @@ Created on Sun Oct 28 17:36:43 2018
 
 @author: Daniel Delgado
 """
-
-from random import randint
 import numpy as np
+import timeit
+from random import randint
 from pylab import *
 from PIL import Image
 from scipy.ndimage import measurements
+from os import listdir, path
 
 # Taken from 
 # https://stackoverflow.com/questions/25664682/
@@ -158,7 +159,7 @@ def paintLabel(immat, center, cellNumber):
 # Counts, gets the area, gets the centroid and labels cells
 # Works with predictions, with raw images may generate inconsistencies
 # [labelCells] = boolean to know if user wants to label and color the cells
-def cellPostProcess(image_path, labelCells = False):
+def cellPostProcess(image_path, imageName, labelCells = False):
     img = Image.open(image_path)
     rgbimg = Image.new("RGBA", img.size)
     rgbimg.paste(img)
@@ -199,8 +200,35 @@ def cellPostProcess(image_path, labelCells = False):
     
     # Kevin, please, rename this correctly
     # This is the file that should be showed
-    rgbimg.save('centerIm.png')            
+    rgbimg.save('postProcess\\' + 'post_' + imageName)         
+
+# If path is a file calculates the probable time for the image
+# If path is a folder calculates the probable execution time for all the images
+def getApproxExecTime(path_):
+    approxExecTime = 0
+    if path.isdir(path_):     
+        for i in listdir(path_):
+            img = Image.open(path_ + '\\' + i)
+            if img.size[0] < 400 or img.size[1] < 400:
+                approxExecTime += img.size[0] * 0.003 + img.size[1] * 0.003
+            else:
+                approxExecTime += img.size[0] * 0.02 + img.size[1] * 0.02
+    else:
+        img = Image.open(path_)
+        approxExecTime = img.size[0] * 0.003 + img.size[1] * 0.003
+
+    return approxExecTime
 
 if __name__ == '__main__':
-    cellPostProcess('C:\\Users\\Daniel\\Desktop\\preds\\1.png', True)
-    print("Done :)")
+    start = timeit.default_timer() # Used to calculate the remaining exec time
+    folderPath = 'C:\\Users\\Daniel\\Desktop\\preds'
+    print("Predicted time: " + str(getApproxExecTime(folderPath)))
+    
+    # Processing each file in folder
+    for i in listdir(folderPath):
+        remainingTime = timeit.default_timer() - start
+        print("Remaining time: " + remainingTime)
+        cellPostProcess(folderPath + '\\' + i, i, True)
+    
+    stop = timeit.default_timer()
+    print('Done! Execution time: ', stop - start)
