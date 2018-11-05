@@ -185,6 +185,7 @@ def cellPostProcess(image_path, imageName, labelCells = False):
     # This is an array containing the area of each cell, in order
     # The first element represents the image black area
     cellsArea = measurements.sum(m, lw, index=arange(lw.max() + 1))
+    cellsCenter = [(0, 0)]
     
     for cell in range(1, cellsCount+1):
         cellColor = getRandomColor()
@@ -193,14 +194,17 @@ def cellPostProcess(image_path, imageName, labelCells = False):
                 if lw[x, y] == cell:
                     slicedIm[x, y] = 1
                     if labelCells: immat[(x, y)] = cellColor
-        # Paints a red pixel the center of the cell        
-        cellsCenter = getCellCenter(slicedIm, X, Y)
-        immat = paintLabel(immat, cellsCenter, cell)
+        # Paints a red pixel the center of the cell     
+        cellCenter = getCellCenter(slicedIm, X, Y)
+        cellsCenter.append(cellCenter)
+        immat = paintLabel(immat, cellCenter, cell)
         slicedIm = np.zeros((X, Y))
     
     # Kevin, please, rename this correctly
     # This is the file that should be showed
-    rgbimg.save('postProcess\\' + 'post_' + imageName)         
+    rgbimg.save('postProcess\\' + 'post_' + imageName)
+
+    return cellsArea, cellsCenter
 
 # If path is a file calculates the probable time for the image
 # If path is a folder calculates the probable execution time for all the images
@@ -220,14 +224,25 @@ def getApproxExecTime(path_):
     return approxExecTime
 
 if __name__ == '__main__':
+    imagePath = "C:\\Users\\Daniel\\Desktop\\preds\\1_pred.png"
+    
+    predictedTotalTime = getApproxExecTime(imagePath)
+    start = timeit.default_timer() # Used to calculate the remaining exec time
+
+    remainingTotalTime = predictedTotalTime - (timeit.default_timer() - start)
+    cellsArea, cellsCenter = cellPostProcess(imagePath, "1_pred.png", True)
+    
+    stop = timeit.default_timer()
+    """
     folderPath = 'C:\\Users\\Daniel\\Desktop\\preds'
-    print("Predicted time: " + str(getApproxExecTime(folderPath)))
+    predictedTotalTime = getApproxExecTime(folderPath)
+    print("Predicted time: " + str(predictedTotalTime))
     
     start = timeit.default_timer() # Used to calculate the remaining exec time
     for i in listdir(folderPath): # Processing each file in folder
-        remainingTime = timeit.default_timer() - start
-        print("Remaining time: " + remainingTime)
+        remainingTotalTime = predictedTotalTime - (timeit.default_timer() - start)
+        print("Remaining time: " + str(remainingTotalTime))
         cellPostProcess(folderPath + '\\' + i, i, True)
     
-    stop = timeit.default_timer()
-    print('Done! Execution time: ', stop - start)
+    print('Done! Execution time: ', timeit.default_timer() - start)
+    """

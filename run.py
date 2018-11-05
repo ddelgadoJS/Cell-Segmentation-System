@@ -152,6 +152,8 @@ def get_unet():
 
     model.compile(optimizer=Adam(lr=1e-4), loss=dice_coef_loss,
                   metrics=[dice_coef])
+    
+    print("Dice: " + str(model.loss))
 
     return model
 
