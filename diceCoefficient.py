@@ -6,33 +6,42 @@ Created on Sun Oct 28 17:36:43 2018
 """
 
 from PIL import Image
+from os import listdir
 
 if __name__ == '__main__':
-    imagePath1 = "C:\\Users\\Daniel\\Desktop\\predSelfAlgorithm.png"  
-    imagePath2 = "C:\\Users\\Daniel\\Desktop\\predSaulAlgorithm.png"  
+    predictionsDirectory = "PREDICTIONSFOLDER"
+    groundTruthDirectory = "GROUNDTRUTHFOLDER"
+    predictionsFiles = listdir(predictionsDirectory)
+    groundtruthFiles = listdir(groundTruthDirectory)
     
-    img1 = Image.open(imagePath1)
-    img2 = Image.open(imagePath2)
+    diceCoefficients = []
+   
+    for i in range(0, len(predictionsFiles)):
+        imgPathPred = predictionsFiles[i]
+        imgPathGT = groundtruthFiles[i]
 
-    immat1 = img1.load()
-    immat2 = img2.load()
+        imgPred = Image.open(predictionsDirectory + imgPathPred)
+        imgGT = Image.open(groundTruthDirectory + imgPathGT)
 
-    (X, Y) = img1.size
+        immatPred = imgPred.load()
+        immatGT = imgGT.load()
+
+        (X, Y) = imgPred.size
     
-    S = 0.0
-    commonElements = 0
-    immat1Elements = 0
-    immat2Elements = 0
+        S = 0.0
+        commonElements = 0
+        immatPredElements = 0
+        immatGTElements = 0
     
-    for x in range(X):
-        for y in range(Y):
-            if immat1[(x, y)] != 0:
-                immat1[(x, y)] = 1
-                immat1Elements += 1
-                if immat2[(x, y)] != 0:
-                    commonElements += 1
-            if immat2[(x, y)] != 0:
-                immat2[(x, y)] = 1
-                immat2Elements += 1
-
-    print((2 * commonElements) / (immat1Elements + immat2Elements))
+        for x in range(X):
+            for y in range(Y):
+                if immatPred[(x, y)] != 0:
+                    immatPred[(x, y)] = 1
+                    immatPredElements += 1
+                    if immatGT[(x, y)] != 0:
+                        commonElements += 1
+                if immatGT[(x, y)] != 0:
+                    immatGT[(x, y)] = 1
+                    immatGTElements += 1
+                    
+        diceCoefficients.append((predictionsFiles[i], groundtruthFiles[i], (2 * commonElements) / (immatPredElements + immatGTElements)))
