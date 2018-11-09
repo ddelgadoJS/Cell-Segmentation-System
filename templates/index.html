@@ -18,17 +18,14 @@
   <nav class="navbar navbar-inverse navbar-fixed-top">
       <div class="container-fluid">
           <div class="navbar-header">
-              <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#myNavbar">
-                  <span class="icon-bar"></span>
-                  <span class="icon-bar"></span>
-              </button>
               <a class="navbar-brand" href="#/Inicio"> <i class="fa fa-home" aria-hidden="true"></i> </a>
           </div>
           <div>
               <div class="collapse navbar-collapse" id="myNavbar">
                   <ul class="nav navbar-nav">
-                      <li><a href="#/IMGs">Carga de Imagenes</a></li>
-                      <li><a href="#/CSVs">Gestionar CSV</a></li>
+                    <li><a href="#/CSVs">Gestionar  CSV</a></li>
+                    <li><a href="#/IMGs">Carga de Imagenes</a></li>
+                    <li><a href="#helpModal" data-toggle="modal" data-target="#helpModal">Ayuda</a></li>
                   </ul>
               </div>
           </div>
@@ -37,10 +34,62 @@
 
   <!-- Seccion 1: Es la seccion Home o Inicio la cual tiene el titulo de la pagina web -->
   <div id="/Inicio" class="container-fluid" style="background-image: url({{ url_for('static', filename='img/1.jpg')}}); height: 800px;">
+
+    {% block content %}
+    <div class = "container" style = "position:fixed; top: 75px; left: 12%; width: 75%; z-index:9999;">
+      {% for message in get_flashed_messages() %}
+        <div class = "alert alert-success">
+          <button type= "button" class = "close" data-dismiss="alert">&times;</button>
+          {{ message }}
+        </div>
+      {% endfor %}
+    </div>
+    {% endblock %}
+
+    <!-- Modal -->
+    <div class="modal fade" id="helpModal" role="dialog">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
+            <h4 class="modal-title">Ayuda</h4>
+          </div>
+          <div class="modal-body">
+            <p>Bienvenido! Para procesar las imagenes primero debe llenar los campos del CSV y proceder a cargar las imagenes,
+              estas se segmentaran de forma automática y luego se generará un CSV con los datos suministrados
+              anteriormente. </p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <h1> Segmentación de Células </h1>
   </div>
 
-  <!-- Seccion 2: Es la seccion que se encarga de la carga de las imagenes -->
+
+  <!-- Seccion 2: En esta seccion se tiene la gestion del CSV y la toma de los datos para dicha generacion -->
+  <div id="/CSVs" class="container-fluid" style= "background-image: url({{ url_for('static', filename='img/2.jpg')}}); height: 600px;">
+
+    <h2> CSV </h2>
+    <div style="color: white; padding: 30px 350px;" >
+      {% from "_macro.html" import render_field %}
+      <form name= "datosCSV" id = "datosID" method = "POST">
+        {{ render_field(form.procedimiento, class = 'form-control') }}
+        {{ render_field(form.comentario, class = 'form-control') }}
+        {{ render_field(form.nombreCSV, class = 'form-control') }}
+
+        <div style="text-align: right; padding: 50px 0px;">
+          <button type = "submit" class = "btn btn-default"> Procesar </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- Seccion 3: Es la seccion que se encarga de la carga de las imagenes -->
   <div id="/IMGs" class="container-fluid" style= "background-image: url({{ url_for('static', filename='img/3.jpg')}}); height: 700px;">
 
 
@@ -140,23 +189,6 @@
     <!-- {% for fn in filename %}
       <img id = "imgAct" style="display: block; margin-right: auto; margin-left: auto; margin-top: 30px; weight: 500px; height: 350px;" src= {{ url_for('static', filename= fn.filename )}}>
     {% endfor %} -->
-  </div>
-
-  <!-- Seccion 3: En esta seccion se tiene la gestion del CSV y la toma de los datos para dicha generacion -->
-  <div id="/CSVs" class="container-fluid" style= "background-image: url({{ url_for('static', filename='img/2.jpg')}}); height: 600px;">
-    <h2> CSV </h2>
-    <div style="color: white; padding: 30px 350px;" >
-      {% from "_macro.html" import render_field %}
-      <form name= "datosCSV" id = "datosID" method = "POST">
-        {{ render_field(form.algoritmo, class = 'form-control') }}
-        {{ render_field(form.comentario, class = 'form-control') }}
-        {{ render_field(form.nombreCSV, class = 'form-control') }}
-
-        <div style="text-align: right; padding: 50px 0px;">
-          <button type = "submit" class = "btn btn-default"> Procesar </button>
-        </div>
-      </form>
-    </div>
   </div>
 
 

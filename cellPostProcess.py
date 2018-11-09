@@ -223,6 +223,11 @@ def getApproxExecTime(path_):
 
     return approxExecTime
 
+def mainFunc(imagePath):
+    imagePath = "C:\\Users\\Daniel\\Desktop\\preds\\1_pred.png"
+
+    cellsArea, cellsCenter = cellPostProcess(imagePath, "1_pred.png", True)
+
 if __name__ == '__main__':
     imagePath = "C:\\Users\\Daniel\\Desktop\\preds\\1_pred.png"
     

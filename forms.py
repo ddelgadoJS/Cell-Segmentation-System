@@ -9,9 +9,9 @@ from wtforms import validators
 
 
 class CommentForm(Form):
-    algoritmo = TextField('No. Algoritmo',
+    procedimiento = TextField('No. Procedimiento',
                           [validators.Required
-                           (message='Ingrese un numero de algoritmo')])
+                           (message='Ingrese un numero de procedimiento')])
     comentario = TextField('Comentario',
                            [validators.Required
                             (message='Ingrese un comentario para el CSV')])

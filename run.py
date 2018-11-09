@@ -8,6 +8,8 @@ import pandas as pd
 
 import numpy as np
 
+from cellPostProcess import mainFunc
+
 from PIL import Image
 from keras.models import Model
 from keras.layers import Input
@@ -17,6 +19,7 @@ from keras.layers import MaxPooling2D
 from keras.layers import Conv2DTranspose
 from keras.optimizers import Adam
 from keras import backend as K
+from flask.helpers import flash
 
 UPLOAD_FOLDER = os.path.abspath("./uploads/")
 STATIC_FOLDER = os.path.abspath("./static/img")
@@ -152,8 +155,6 @@ def get_unet():
 
     model.compile(optimizer=Adam(lr=1e-4), loss=dice_coef_loss,
                   metrics=[dice_coef])
-    
-    print("Dice: " + str(model.loss))
 
     return model
 
@@ -242,18 +243,18 @@ def listaT(tam):
 """
     Escribir CSV con datos generados de manera ficticia apartir de la imagen
     @param nombre: nombre del CSV
-    @param noAlgoritmo: numero de algoritmo aplicado a la imagen
+    @param noProcedimiento: numero de procedimiento aplicado a la imagen
     @param comentario: comentario acerca de la imagen
     @return nada
 """
 
 
-def escribirCSV(nombre, noAlgoritmo, comentario):
+def escribirCSV(nombre, noProcedimiento, comentario):
     """ Datos Default para prueba POC """
     """ Diccionario de Datos ficticios que se agregaran al CSV """
-    if (nombre == "" or noAlgoritmo == "" or comentario == ""):
+    if (nombre == "" or noProcedimiento == "" or comentario == ""):
         raise ValueError('Todos los campos deben estar llenos')
-    diccionario = {'Algorithm Number': [noAlgoritmo],
+    diccionario = {'Algorithm Number': [noProcedimiento],
                    'Obj_quantity': [24],
                    'Precision': [42],
                    'Notes': [comentario]}
@@ -267,11 +268,12 @@ def escribirCSV(nombre, noAlgoritmo, comentario):
               'SegmentacionCelulas/static/csv/' +
               nombre + '.csv')   # Especificar ruta
     print("Creado con Exito")
+    flash("CSV de Resultados generado con exito")
 
 """
     Leer CSV del cual se desea obtener los datos
     @param nombre: nombre del CSV
-    @param noAlgoritmo: numero de algoritmo aplicado a la imagen
+    @param noProcedimiento: numero de procedimiento aplicado a la imagen
     @param comentario: comentario acerca de la imagen
     @return nada
 """
@@ -314,48 +316,50 @@ def index():
         se realiza la carga de dichas imagenes """
 
     if request.method == 'POST' and comment_form.validate():
-        print(comment_form.algoritmo.data)
+        print(comment_form.procedimiento.data)
         print(comment_form.comentario.data)
         print(comment_form.nombreCSV.data)
-        escribirCSV(comment_form.nombreCSV.data, comment_form.algoritmo.data,
+        escribirCSV(comment_form.nombreCSV.data, comment_form.procedimiento.data,
                     comment_form.comentario.data)
         print("CSV Generado")
 
     elif request.method == "POST" and "imgUp" in request.files:
-        f = request.files.getlist("imgUp")
-        fl = []
-        print(f)
-        if f[0].filename != "":
-            for fn in f:
-                fn.save(os.path.join(app.config["STATIC_FOLDER"], fn.filename))
-                # fn.save(os.path.join(app.config["UPLOAD_FOLDER"],fn.filename))
-                # send_from_directory(app.config["UPLOAD_FOLDER"],fn.filename)
-                fn.filename = "img/" + fn.filename
-                # print(fn.filename)
-
-                # Se almacena en una lista para futuro procesamiento
-                item = imagen.Imagen(fn.filename)
-                fl = fl + [item]
-
-            # print(f)
-            ft = listaT(len(f))
-            print("Imagenes Cargadas")
-            # print ("Objeto Creado")
-            # print (fl[0].getImagenes())
-
-            flp = predict(f)
-
-            i = 0
-            while i < len(flp):
-                flp[i] = "img/" + flp[i]
-                i += 1
-
-            return render_template('index.html', title=title,
-                                   form=comment_form, fp=f[0],
-                                   filename=f[1:], ft=ft, fpp=flp[0],
-                                   filenameP=flp[1:])
-        else:
-            raise ValueError('No se han seleccionado imagenes para procesar')
+        
+        mainFunc("dfd")
+#         f = request.files.getlist("imgUp")
+#         fl = []
+#         print(f)
+#         if f[0].filename != "":
+#             for fn in f:
+#                 fn.save(os.path.join(app.config["STATIC_FOLDER"], fn.filename))
+#                 # fn.save(os.path.join(app.config["UPLOAD_FOLDER"],fn.filename))
+#                 # send_from_directory(app.config["UPLOAD_FOLDER"],fn.filename)
+#                 fn.filename = "img/" + fn.filename
+#                 # print(fn.filename)
+# 
+#                 # Se almacena en una lista para futuro procesamiento
+#                 item = imagen.Imagen(fn.filename)
+#                 fl = fl + [item]
+# 
+#             # print(f)
+#             ft = listaT(len(f))
+#             print("Imagenes Cargadas")
+#             # print ("Objeto Creado")
+#             # print (fl[0].getImagenes())
+# 
+#             flp = predict(f)
+# 
+#             i = 0
+#             while i < len(flp):
+#                 flp[i] = "img/" + flp[i]
+#                 i += 1
+# 
+#             return render_template('index.html', title=title,
+#                                    form=comment_form, fp=f[0],
+#                                    filename=f[1:], ft=ft, fpp=flp[0],
+#                                    filenameP=flp[1:])
+#         else:
+#             raise ValueError('No se han seleccionado imagenes para procesar')
 
     """ Renderiza pagina web para ser visualizada """
     return render_template('index.html', title=title, form=comment_form)
@@ -363,4 +367,6 @@ def index():
 """ Corre el servidor 8000 si lo dejo en default es 5000 """
 
 if __name__ == '__main__':
+    app.secret_key = 'nothing'
     app.run(host='0.0.0.0', debug=True, port=8000)
+    
