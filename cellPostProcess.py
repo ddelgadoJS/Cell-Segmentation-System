@@ -12,6 +12,8 @@ from os import listdir, path
 # https://stackoverflow.com/questions/25664682/
 # how-to-find-cluster-sizes-in-2d-numpy-array
 def getCellCenter(immat, X, Y):
+    if immat == []:
+        raise ValueError ("Error al buscar la imagen")
     m = np.zeros((X, Y))
     for x in range(X):
         for y in range(Y):
@@ -27,6 +29,8 @@ def getCellCenter(immat, X, Y):
     return (cx, cy)
 
 def countCells(clusteredArray, X, Y):
+    if len(clusteredArray) == 0:
+        raise ValueError ("Error, la lista está vacía")
     numCells = 0
     for x in range(X):
         for y in range(Y):
@@ -45,6 +49,8 @@ def paintLableAux(immat, x, y):
     return immat
 
 def paintLabel(immat, center, cellNumber):
+    if center == None:
+        raise ValueError ("Error. El centro dado no es válido.")
     cellNumberLen = len(str(abs(cellNumber)))
     # To center the label in cell
     center = (center[0]-(cellNumberLen-1)*2, center[1])
@@ -156,7 +162,10 @@ def paintLabel(immat, center, cellNumber):
 # Works with predictions, with raw images may generate inconsistencies
 # [labelCells] = boolean to know if user wants to label and color the cells
 def cellPostProcess(image_path, imageName, labelCells = False):
-    img = Image.open(image_path)
+    try:
+        img = Image.open(image_path)
+    except:
+        raise ValueError("Error")
     rgbimg = Image.new("RGBA", img.size)
     rgbimg.paste(img)
     immat = rgbimg.load()
@@ -206,6 +215,8 @@ def cellPostProcess(image_path, imageName, labelCells = False):
 # If path is a file calculates the probable time for the image
 # If path is a folder calculates the probable execution time for all the images
 def getApproxExecTime(path_):
+    if len( path_) == 0:
+        raise ValueError ( "Error. La ruta no es válida" )
     approxExecTime = 0
     if path.isdir(path_):
         for i in listdir(path_):
@@ -215,7 +226,10 @@ def getApproxExecTime(path_):
             else:
                 approxExecTime += img.size[0] * 0.02 + img.size[1] * 0.02
     else:
-        img = Image.open(path_)
+        try:
+            img = Image.open(path_)
+        except:
+            raise ValueError("Imagen Invalida")
         approxExecTime = img.size[0] * 0.003 + img.size[1] * 0.003
 
     return approxExecTime

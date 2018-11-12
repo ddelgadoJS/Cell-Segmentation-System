@@ -311,9 +311,11 @@ def escribirDice(dc):
 def escribirCSV(nombre, noProcedimiento, cellsArea, cellsCenter, imageName):
     """ Datos Default para prueba POC """
     """ Diccionario de Datos ficticios que se agregaran al CSV """
-    if (nombre == "" or noProcedimiento == ""):
+    if (nombre == "" or noProcedimiento == "" or nombre == None or noProcedimiento == None):
         raise ValueError('Todos los campos deben estar llenos')
-    diccionario = {'CellNumber': list(range(1, len(cellsArea))),
+    elif (cellsArea == [] or cellsCenter == []):
+        raise ValueError('Datos no validos')
+    diccionario = {'Cell Number': list(range(1, len(cellsArea))),
                    'Area': cellsArea[1:],
                    'Center': cellsCenter[1:]}
 
@@ -410,9 +412,11 @@ def index():
             # POST PROCESS
 
             for pl in flp:
+                print("HOLA", pred_dir + "/" + pl[4:], pl[4:])
                 cellArea, cellCenter = mainFunc(pred_dir + "/" + pl[4:], pl[4:])
                 escribirCSV(comment_form.nombreCSV.data, comment_form.procedimiento.data, cellArea, cellCenter, pl[4:-4])
-                
+            
+            print("ADIOS" ,cellArea, cellCenter)
                 # mainFunc("C:\\Users\\Kevin MM\\eclipse-workspace\\SegmentacionCelulas\\preds\\2_pred.png", "2_pred.png")
             
             flash("CSV de Resultados generado con exito")
@@ -442,8 +446,7 @@ def index():
             while i < len(flp):
                 flp[i] = [flp[i], times[i]]
                 i += 1
-            
-            print("d", flp)
+
             
             return render_template('index.html', title=title,
                                    form=comment_form, av=av, fp=f[0],
