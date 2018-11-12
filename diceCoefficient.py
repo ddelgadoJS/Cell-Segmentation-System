@@ -9,13 +9,13 @@ from PIL import Image
 from os import listdir
 
 if __name__ == '__main__':
-    predictionsDirectory = "PREDICTIONSFOLDER"
-    groundTruthDirectory = "GROUNDTRUTHFOLDER"
+    predictionsDirectory = "C:\\Users\\Kevin MM\\eclipse-workspace\\SegmentacionCelulas\\Documents\\dice\\Predictions\\"
+    groundTruthDirectory = "C:\\Users\\Kevin MM\\eclipse-workspace\\SegmentacionCelulas\\Documents\\dice\\GTResized\\"
     predictionsFiles = listdir(predictionsDirectory)
     groundtruthFiles = listdir(groundTruthDirectory)
-    
+
     diceCoefficients = []
-   
+
     for i in range(0, len(predictionsFiles)):
         imgPathPred = predictionsFiles[i]
         imgPathGT = groundtruthFiles[i]
@@ -27,12 +27,12 @@ if __name__ == '__main__':
         immatGT = imgGT.load()
 
         (X, Y) = imgPred.size
-    
+
         S = 0.0
         commonElements = 0
         immatPredElements = 0
         immatGTElements = 0
-    
+
         for x in range(X):
             for y in range(Y):
                 if immatPred[(x, y)] != 0:
@@ -43,5 +43,6 @@ if __name__ == '__main__':
                 if immatGT[(x, y)] != 0:
                     immatGT[(x, y)] = 1
                     immatGTElements += 1
-                    
+
         diceCoefficients.append((predictionsFiles[i], groundtruthFiles[i], (2 * commonElements) / (immatPredElements + immatGTElements)))
+    return diceCoefficients

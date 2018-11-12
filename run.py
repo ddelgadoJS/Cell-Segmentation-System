@@ -9,6 +9,7 @@ import pandas as pd
 import numpy as np
 
 from cellPostProcess import mainFunc
+from cellPostProcess import predictTime
 
 from PIL import Image
 from keras.models import Model
@@ -20,6 +21,8 @@ from keras.layers import Conv2DTranspose
 from keras.optimizers import Adam
 from keras import backend as K
 from flask.helpers import flash
+from os import listdir
+import timeit
 
 UPLOAD_FOLDER = os.path.abspath("./uploads/")
 STATIC_FOLDER = os.path.abspath("./static/img")
@@ -48,6 +51,44 @@ Jose Daniel Delgado Segura - 2015001500
 
 """
 
+def diceCoefficients():
+    predictionsDirectory = ".\\Documents\\dice\\Predictions\\"
+    groundTruthDirectory = ".\\Documents\\dice\\GTResized\\"
+    predictionsFiles = listdir(predictionsDirectory)
+    groundtruthFiles = listdir(groundTruthDirectory)
+
+    diceCoefficients = []
+
+    for i in range(0, len(predictionsFiles)):
+        imgPathPred = predictionsFiles[i]
+        imgPathGT = groundtruthFiles[i]
+
+        imgPred = Image.open(predictionsDirectory + imgPathPred)
+        imgGT = Image.open(groundTruthDirectory + imgPathGT)
+
+        immatPred = imgPred.load()
+        immatGT = imgGT.load()
+
+        (X, Y) = imgPred.size
+
+        S = 0.0
+        commonElements = 0
+        immatPredElements = 0
+        immatGTElements = 0
+
+        for x in range(X):
+            for y in range(Y):
+                if immatPred[(x, y)] != 0:
+                    immatPred[(x, y)] = 1
+                    immatPredElements += 1
+                    if immatGT[(x, y)] != 0:
+                        commonElements += 1
+                if immatGT[(x, y)] != 0:
+                    immatGT[(x, y)] = 1
+                    immatGTElements += 1
+
+        diceCoefficients.append((predictionsFiles[i], groundtruthFiles[i], (2 * commonElements) / (immatPredElements + immatGTElements)))
+    return diceCoefficients
 
 # Compute dice coeficient used in loss function
 def dice_coef(y_true, y_pred):
@@ -221,6 +262,12 @@ def predict(ruta):
     return flp
 
 
+""" Nuevo Objeto """
+app = Flask(__name__)
+app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
+app.config["STATIC_FOLDER"] = STATIC_FOLDER
+
+
 """"
     Crear Lista para manejo de imagenes en aplicacion web
     @param tam: tamanno de la lista que se desea construir
@@ -244,37 +291,45 @@ def listaT(tam):
     Escribir CSV con datos generados de manera ficticia apartir de la imagen
     @param nombre: nombre del CSV
     @param noProcedimiento: numero de procedimiento aplicado a la imagen
-    @param comentario: comentario acerca de la imagen
     @return nada
 """
 
-
-def escribirCSV(nombre, noProcedimiento, comentario):
-    """ Datos Default para prueba POC """
-    """ Diccionario de Datos ficticios que se agregaran al CSV """
-    if (nombre == "" or noProcedimiento == "" or comentario == ""):
-        raise ValueError('Todos los campos deben estar llenos')
-    diccionario = {'Algorithm Number': [noProcedimiento],
-                   'Obj_quantity': [24],
-                   'Precision': [42],
-                   'Notes': [comentario]}
+def escribirDice(dc):
+    diccionario = {'Prediction': [value[0] for value in dc],
+                   'Ground Truth': [value[1] for value in dc],
+                   'Percentage': [value[2] for value in dc]}
 
     """ Columnas de la Estructura del CSV """
-    listaColumnas = ['Algorithm Number', 'Obj_quantity', 'Precision', 'Notes']
+    listaColumnas = ['Prediction', 'Ground Truth', 'Percentage']
 
     """" Creando CSV """
     df = pd.DataFrame(diccionario, columns=listaColumnas)
-    df.to_csv('C:/Users/Kevin MM/eclipse-workspace/' +
-              'SegmentacionCelulas/static/csv/' +
-              nombre + '.csv')   # Especificar ruta
+    df.to_csv( STATIC_FOLDER[:-4] + '/csv/' + 
+              "CoeficienteDice" + '.csv')   # Especificar ruta
     print("Creado con Exito")
-    flash("CSV de Resultados generado con exito")
+
+def escribirCSV(nombre, noProcedimiento, cellsArea, cellsCenter, imageName):
+    """ Datos Default para prueba POC """
+    """ Diccionario de Datos ficticios que se agregaran al CSV """
+    if (nombre == "" or noProcedimiento == ""):
+        raise ValueError('Todos los campos deben estar llenos')
+    diccionario = {'CellNumber': list(range(1, len(cellsArea))),
+                   'Area': cellsArea[1:],
+                   'Center': cellsCenter[1:]}
+
+    """ Columnas de la Estructura del CSV """
+    listaColumnas = ['Cell Number', 'Area', 'Center']
+
+    """" Creando CSV """
+    df = pd.DataFrame(diccionario, columns=listaColumnas)
+    df.to_csv( STATIC_FOLDER[:-4] + '/csv/' + 
+              nombre + "(" + imageName + ")" + "(" + noProcedimiento + ")" + '.csv')   # Especificar ruta
+    print("Creado con Exito")
 
 """
     Leer CSV del cual se desea obtener los datos
     @param nombre: nombre del CSV
     @param noProcedimiento: numero de procedimiento aplicado a la imagen
-    @param comentario: comentario acerca de la imagen
     @return nada
 """
 
@@ -288,11 +343,6 @@ def leerCSV(nombreArchivo):
 
 
 """ Pagina Web """
-
-""" Nuevo Objeto """
-app = Flask(__name__)
-app.config["UPLOAD_FOLDER"] = UPLOAD_FOLDER
-app.config["STATIC_FOLDER"] = STATIC_FOLDER
 
 """
     Funcion para la llamada del archivo con los datos de la pagina web
@@ -308,64 +358,105 @@ def index():
     """ Llamada al formulario de datos en la pagina web """
     comment_form = forms.CommentForm(request.form)
     title = "Segmentacion de Celulas"
-
+    dc = diceCoefficients()
+    escribirDice(dc)
+    
+    av = 0
+            
+    for j in dc:
+        av += j[2]
+                
+    av /= len(dc)
+    
     """ Si se recibe una solicitud POST de la paguina web y las validaciones
         funcionan se imprimen en pantalla y se genera el documento. Si no
         si se recibe una solicitud POST de la pagina y se tienen
         datos en la variable del input con el nombre imgUp
         se realiza la carga de dichas imagenes """
 
-    if request.method == 'POST' and comment_form.validate():
-        print(comment_form.procedimiento.data)
-        print(comment_form.comentario.data)
-        print(comment_form.nombreCSV.data)
-        escribirCSV(comment_form.nombreCSV.data, comment_form.procedimiento.data,
-                    comment_form.comentario.data)
-        print("CSV Generado")
 
-    elif request.method == "POST" and "imgUp" in request.files:
-        
-        mainFunc("dfd")
-#         f = request.files.getlist("imgUp")
-#         fl = []
-#         print(f)
-#         if f[0].filename != "":
-#             for fn in f:
-#                 fn.save(os.path.join(app.config["STATIC_FOLDER"], fn.filename))
-#                 # fn.save(os.path.join(app.config["UPLOAD_FOLDER"],fn.filename))
-#                 # send_from_directory(app.config["UPLOAD_FOLDER"],fn.filename)
-#                 fn.filename = "img/" + fn.filename
-#                 # print(fn.filename)
-# 
-#                 # Se almacena en una lista para futuro procesamiento
-#                 item = imagen.Imagen(fn.filename)
-#                 fl = fl + [item]
-# 
-#             # print(f)
-#             ft = listaT(len(f))
-#             print("Imagenes Cargadas")
-#             # print ("Objeto Creado")
-#             # print (fl[0].getImagenes())
-# 
-#             flp = predict(f)
-# 
-#             i = 0
-#             while i < len(flp):
-#                 flp[i] = "img/" + flp[i]
-#                 i += 1
-# 
-#             return render_template('index.html', title=title,
-#                                    form=comment_form, fp=f[0],
-#                                    filename=f[1:], ft=ft, fpp=flp[0],
-#                                    filenameP=flp[1:])
-#         else:
-#             raise ValueError('No se han seleccionado imagenes para procesar')
+    if request.method == "POST" and "imgUp" in request.files:
+        f = request.files.getlist("imgUp")
+        fl = []
+        print(f)
+        if f[0].filename != "":
+            for fn in f:
+                fn.save(os.path.join(app.config["STATIC_FOLDER"], fn.filename))
+                # fn.save(os.path.join(app.config["UPLOAD_FOLDER"],fn.filename))
+                # send_from_directory(app.config["UPLOAD_FOLDER"],fn.filename)
+                fn.filename = "img/" + fn.filename
+                # print(fn.filename)
+ 
+                # Se almacena en una lista para futuro procesamiento
+                item = imagen.Imagen(fn.filename)
+                fl = fl + [item]
+ 
+            # print(f)
+            ft = listaT(len(f))
+            print("Imagenes Cargadas")
+            # print ("Objeto Creado")
+            # print (fl[0].getImagenes())
+ 
+            start = timeit.default_timer()
+            flp = predict(f)
+ 
+            i = 0
+            while i < len(flp):
+                flp[i] = "img/" + flp[i]
+                i += 1
+                
+            print("SEGMENTATION PROCESS: ", flp)
+  
+            # POST PROCESS
+
+            for pl in flp:
+                cellArea, cellCenter = mainFunc(pred_dir + "/" + pl[4:], pl[4:])
+                escribirCSV(comment_form.nombreCSV.data, comment_form.procedimiento.data, cellArea, cellCenter, pl[4:-4])
+                
+                # mainFunc("C:\\Users\\Kevin MM\\eclipse-workspace\\SegmentacionCelulas\\preds\\2_pred.png", "2_pred.png")
+            
+            flash("CSV de Resultados generado con exito")
+            
+            i = 0
+            while i < len(flp):
+                flp[i] = "img/post_" + flp[i][4:]
+                i += 1
+                
+            print("POST SEGMENTATION PROCESS: ", flp)
+            
+            print("DICE COEFFICIENT", dc)
+            
+            paths = []
+            
+            i = 0
+            while i < len(flp):
+                paths += [STATIC_FOLDER + "\\" + flp[i][4:]]
+                i += 1
+            
+            times = []
+            times, totalTime = predictTime(paths, start)
+            
+            flash("Tiempo total de Ejecucion: " + str(format(totalTime, 'f')))
+            
+            i = 0
+            while i < len(flp):
+                flp[i] = [flp[i], times[i]]
+                i += 1
+            
+            print("d", flp)
+            
+            return render_template('index.html', title=title,
+                                   form=comment_form, av=av, fp=f[0],
+                                   filename=f[1:], ft=ft, fpp=flp[0],
+                                   filenameP=flp[1:])
+        else:
+            raise ValueError('No se han seleccionado imagenes para procesar')
 
     """ Renderiza pagina web para ser visualizada """
-    return render_template('index.html', title=title, form=comment_form)
+    return render_template('index.html', title=title, form=comment_form, av=av)
 
 """ Corre el servidor 8000 si lo dejo en default es 5000 """
-
+        
 if __name__ == '__main__':
     app.secret_key = 'nothing'
     app.run(host='0.0.0.0', debug=True, port=8000)

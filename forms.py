@@ -12,9 +12,6 @@ class CommentForm(Form):
     procedimiento = TextField('No. Procedimiento',
                           [validators.Required
                            (message='Ingrese un numero de procedimiento')])
-    comentario = TextField('Comentario',
-                           [validators.Required
-                            (message='Ingrese un comentario para el CSV')])
     nombreCSV = TextField('Nombre del CSV',
                           [validators.Required
                            (message='Ingrese un nombre para el CSV')])

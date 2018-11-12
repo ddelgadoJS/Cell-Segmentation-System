@@ -37,7 +37,7 @@ class TestRun(unittest.TestCase):
 
     def test_crearCSV(self):
         print("test_crearCSV")
-        self.assertRaises(ValueError, run.escribirCSV, "", "", "")
+        self.assertRaises(ValueError, run.escribirCSV, "", "", "", [], [])
         print("---- end test ----")
         
     def test_load_test_data(self):

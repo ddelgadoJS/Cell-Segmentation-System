@@ -1,18 +1,14 @@
 # -*- coding: utf-8 -*-
-"""
-Created on Sun Oct 28 17:36:43 2018
 
-@author: Daniel Delgado
-"""
 import numpy as np
 import timeit
 from random import randint
 from pylab import *
-from PIL import Image
+from PIL import Image, ImagePath
 from scipy.ndimage import measurements
 from os import listdir, path
 
-# Taken from 
+# Taken from
 # https://stackoverflow.com/questions/25664682/
 # how-to-find-cluster-sizes-in-2d-numpy-array
 def getCellCenter(immat, X, Y):
@@ -27,7 +23,7 @@ def getCellCenter(immat, X, Y):
     # Expected values
     cx = np.sum(dx * np.arange(X))
     cy = np.sum(dy * np.arange(Y))
-    
+
     return (cx, cy)
 
 def countCells(clusteredArray, X, Y):
@@ -152,10 +148,10 @@ def paintLabel(immat, center, cellNumber):
                 immat = paintLableAux(immat, center[0]-1+(i*4), center[1]+y)
                 immat = paintLableAux(immat, center[0]+1+(i*4), center[1]+y)
                 immat = paintLableAux(immat, center[0]-1+(i*4), center[1]-y)
-                immat = paintLableAux(immat, center[0]+1+(i*4), center[1]-y)             
-                
+                immat = paintLableAux(immat, center[0]+1+(i*4), center[1]-y)
+
     return immat
-            
+
 # Counts, gets the area, gets the centroid and labels cells
 # Works with predictions, with raw images may generate inconsistencies
 # [labelCells] = boolean to know if user wants to label and color the cells
@@ -168,25 +164,25 @@ def cellPostProcess(image_path, imageName, labelCells = False):
     (X, Y) = rgbimg.size
     m = np.zeros((X, Y))
     slicedIm = np.zeros((X, Y))
-    
+
     for x in range(X):
         for y in range(Y):
-            # To find the clusters 
+            # To find the clusters
             if immat[(x, y)] != (0, 0, 0, 255):
                 m[x, y] = 1
-    
+
     # Making clusters
     lw, num = measurements.label(m)
     np.set_printoptions(threshold=np.nan)
-    
+
     # Getting number of cells
     cellsCount = countCells(lw, X, Y)
-    
+
     # This is an array containing the area of each cell, in order
     # The first element represents the image black area
     cellsArea = measurements.sum(m, lw, index=arange(lw.max() + 1))
     cellsCenter = [(0, 0)]
-    
+
     for cell in range(1, cellsCount+1):
         cellColor = getRandomColor()
         for y in range(Y):
@@ -194,15 +190,16 @@ def cellPostProcess(image_path, imageName, labelCells = False):
                 if lw[x, y] == cell:
                     slicedIm[x, y] = 1
                     if labelCells: immat[(x, y)] = cellColor
-        # Paints a red pixel the center of the cell     
+        # Paints a red pixel the center of the cell
         cellCenter = getCellCenter(slicedIm, X, Y)
         cellsCenter.append(cellCenter)
         immat = paintLabel(immat, cellCenter, cell)
         slicedIm = np.zeros((X, Y))
-    
+
     # Kevin, please, rename this correctly
     # This is the file that should be showed
     rgbimg.save('postProcess\\' + 'post_' + imageName)
+    rgbimg.save('static\\img\\' + 'post_' + imageName)
 
     return cellsArea, cellsCenter
 
@@ -210,7 +207,7 @@ def cellPostProcess(image_path, imageName, labelCells = False):
 # If path is a folder calculates the probable execution time for all the images
 def getApproxExecTime(path_):
     approxExecTime = 0
-    if path.isdir(path_):     
+    if path.isdir(path_):
         for i in listdir(path_):
             img = Image.open(path_ + '\\' + i)
             if img.size[0] < 400 or img.size[1] < 400:
@@ -223,31 +220,23 @@ def getApproxExecTime(path_):
 
     return approxExecTime
 
-def mainFunc(imagePath):
-    imagePath = "C:\\Users\\Daniel\\Desktop\\preds\\1_pred.png"
+def mainFunc(imagePath, imageName):
+    cellsArea, cellsCenter = cellPostProcess(imagePath, imageName, True)
+    return cellsArea, cellsCenter
 
-    cellsArea, cellsCenter = cellPostProcess(imagePath, "1_pred.png", True)
 
-if __name__ == '__main__':
-    imagePath = "C:\\Users\\Daniel\\Desktop\\preds\\1_pred.png"
+def predictTime(imagePaths, start):
+    predictedTotalTime = 0
+    predicteds = []
     
-    predictedTotalTime = getApproxExecTime(imagePath)
-    start = timeit.default_timer() # Used to calculate the remaining exec time
-
-    remainingTotalTime = predictedTotalTime - (timeit.default_timer() - start)
-    cellsArea, cellsCenter = cellPostProcess(imagePath, "1_pred.png", True)
-    
-    stop = timeit.default_timer()
-    """
-    folderPath = 'C:\\Users\\Daniel\\Desktop\\preds'
-    predictedTotalTime = getApproxExecTime(folderPath)
-    print("Predicted time: " + str(predictedTotalTime))
-    
-    start = timeit.default_timer() # Used to calculate the remaining exec time
-    for i in listdir(folderPath): # Processing each file in folder
+    for i in imagePaths:
+        predictedTotalTime += getApproxExecTime(i)
+        predicteds += [getApproxExecTime(i)]
+    print("Predicted time: " + str(predictedTotalTime)) # Used to calculate the remaining exec time
+    for i in imagePaths: # Processing each file in folder
         remainingTotalTime = predictedTotalTime - (timeit.default_timer() - start)
         print("Remaining time: " + str(remainingTotalTime))
-        cellPostProcess(folderPath + '\\' + i, i, True)
+
+#     print('Done! Execution time: ', timeit.default_timer() - start)
     
-    print('Done! Execution time: ', timeit.default_timer() - start)
-    """
+    return predicteds, timeit.default_timer() - start
